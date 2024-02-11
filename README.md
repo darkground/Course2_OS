@@ -1,6 +1,6 @@
 # Course 2 Operating Systems
 
-Операционные системы
+Курс операционных систем
 
 ## Roadmap
 
