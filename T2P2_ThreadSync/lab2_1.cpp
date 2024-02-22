@@ -63,8 +63,8 @@ int main() {
     flag2 = 0;
 
     pthread_join(id1, NULL);
-    pthread_join(id2, NULL);
     printf("поток 1 завершился\n");
+    pthread_join(id2, NULL);
     printf("поток 2 завершился\n");
 
     printf("программа завершила работу\n");
