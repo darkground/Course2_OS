@@ -2,6 +2,8 @@
 #include <locale.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <string.h>
+#include <limits.h>
 #include <sys/wait.h>
 
 /*
@@ -19,6 +21,17 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, sig_handler);
     printf("программа начала работу\n");
     
+    char pth[] = "PATH=";
+    char cwd[PATH_MAX];
+    getcwd(cwd, sizeof(cwd));
+
+    char modpath[sizeof(pth)+sizeof(cwd)];
+    strcpy(modpath, pth);
+    strcat(modpath, cwd);
+
+    printf("Path to append: %s\n", modpath);
+    putenv(modpath);
+
     pid_t pid = fork();
     int wstatus = -1;
 
