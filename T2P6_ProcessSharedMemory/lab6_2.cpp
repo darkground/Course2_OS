@@ -45,7 +45,7 @@ void* thread1(void* args) {
     {
         sem_wait(writesem);
         memcpy(buf, shared, size);
-        printf("%s\n", buf);
+        printf("Read = %s\n", buf);
         sem_post(readsem);
     }
     printf("поток 1 закончил работу\n");
@@ -62,8 +62,8 @@ int main() {
     memfd = shm_open(memname, O_RDWR | O_CREAT, 0644);
     ftruncate(memfd, size);
     laddr = mmap(NULL, size, PROT_READ, MAP_SHARED, memfd, 0);
-    readsem = sem_open(readsemname, O_CREAT, 0644, 1);
-    writesem = sem_open(writesemname, O_CREAT, 0644, 1);
+    readsem = sem_open(readsemname, O_CREAT, 0644, 0);
+    writesem = sem_open(writesemname, O_CREAT, 0644, 0);
 
     pthread_create(&id1, NULL, thread1, NULL);
     printf("программа ждет нажатия клавиши\n");
