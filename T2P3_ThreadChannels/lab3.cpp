@@ -31,12 +31,10 @@ void* thread1(void* args) {
     {
         buf = get_current_dir_name();
         int res = write(filedes[1], buf, strlen(buf));
-        if (res > 0) { // Success
-            free(buf);
-        }
         if (res == -1) { // Error
             perror("write_fail");
         }
+        free(buf);
         sleep(2);
     }
     printf("поток 1 закончил работу\n");
