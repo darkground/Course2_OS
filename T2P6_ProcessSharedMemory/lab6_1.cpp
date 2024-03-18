@@ -50,6 +50,7 @@ void* thread1(void* args) {
         sem_post(writesem);
         sem_wait(readsem);
         sleep(1);
+        free(buf);
     }
     printf("поток 1 закончил работу\n");
     pthread_exit(NULL);
