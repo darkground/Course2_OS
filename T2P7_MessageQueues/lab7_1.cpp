@@ -44,6 +44,7 @@ void* thread1(void* args) {
         } else {
             printf("write: %s\n", message.buff);
         }
+        free(buf);
         sleep(1);
     }
     printf("поток 1 закончил работу\n");
