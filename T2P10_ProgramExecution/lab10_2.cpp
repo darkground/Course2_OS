@@ -13,10 +13,21 @@
 */
 
 ev_child child_watcher;
+ev_io io_watcher;
+pid_t pid;
 
 void sig_handler(int signo) {
     printf("\nExiting: SIGINT %d\n", signo);
     exit(0);
+}
+
+static void stdin_cb(EV_P_  ev_io *w, int revents)
+{
+    ev_io_stop(EV_A_ w);
+    ev_break(EV_A_ EVBREAK_ALL);
+    kill(pid, SIGTERM);
+    // Killing the process so it won't print after program exiting.
+    printf("клавиша нажата\n");
 }
 
 static void child_cb(EV_P_ ev_child *w, int revents)
@@ -42,7 +53,7 @@ int main(int argc, char* argv[]) {
     printf("Path to append: %s\n", modpath);
     putenv(modpath);
 
-    pid_t pid = fork();
+    pid = fork();
     int wstatus = -1;
 
     switch (pid)
@@ -62,18 +73,22 @@ int main(int argc, char* argv[]) {
         case 6: // 5 arguments
             execlp("lab_child", argv[1], argv[2], argv[3], argv[4], argv[5], NULL);
             break;
-        default: 
-            break;
+        default:
+            printf("Child: Provide 3-5 arguments\n");
+            exit(1);
         }
-        return 0;
     default:
         ev_child_init(&child_watcher, child_cb, pid, 0);
         ev_child_start(EV_DEFAULT_ &child_watcher);
+        ev_io_init(&io_watcher, stdin_cb, STDIN_FILENO, EV_READ);
+        ev_io_start(EV_DEFAULT_ &io_watcher);
         printf("Parent: parent's PID is %d\n", getppid());
         printf("Parent: my PID is %d\n", getpid());
         printf("Parent: child's PID is %d\n", pid);
         break;
     }
+
+    printf("программа ждет нажатия клавиши\n");
 
     ev_run(EV_DEFAULT_ 0);
 
